@@ -1,0 +1,43 @@
+-- 1. All Users Table (common for login/role management)
+CREATE TABLE all_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    unique_id TEXT UNIQUE NOT NULL,
+    role TEXT CHECK(role IN ('admin', 'worker', 'user')) NOT NULL,
+    password TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    hospital_id TEXT
+);
+
+-- 2. Workers Table (refers to all_users with role='worker')
+CREATE TABLE workers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER UNIQUE NOT NULL,  -- Links to all_users.id
+    organization TEXT NOT NULL,
+    hospital_id TEXT NOT NULL,
+    hospital_name TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES all_users(id)
+);
+
+-- 3. Users Table (refers to all_users with role='user')
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER UNIQUE NOT NULL,  -- Links to all_users.id
+    full_name TEXT NOT NULL,
+    age INTEGER,
+    gender TEXT,
+    hospital_id TEXT,
+    FOREIGN KEY (user_id) REFERENCES all_users(id)
+);
+
+-- 4. User Vaccination Data (one-to-many relationship with users)
+CREATE TABLE user_vaccination_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,   -- Refers to users.user_id
+    vaccine_name TEXT NOT NULL,
+    dose_number INTEGER,
+    vaccination_date DATE,
+    next_due_date DATE,
+    booster_given BOOLEAN DEFAULT 0,
+    disease_history TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
