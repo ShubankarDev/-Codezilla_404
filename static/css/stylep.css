@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: url("/static/image/img.jpg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.login-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.login-header .icon {
+  font-size: 2rem;
+}
+
+.login-header h2 {
+  margin: 0.5rem;
+  font-weight: bold;
+}
+
+.login-header p {
+  margin: 0.5rem 0 1.5rem;
+  color: #555;
+  font-size: 0.7rem;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.input-group input {
+  width: 94%;
+  padding: 0.85rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background: linear-gradient(to right, #007bff, #5b5bff);
+  color: white;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+label{
+  font-size: 90%;
+  margin-left: .3rem;
+}
+button[type="submit"]:hover {
+  background: linear-gradient(to right, hsl(215, 100%, 41%), #3f3fdd);
+}
+
+.footer-text {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.footer-links {
+  margin-top: 0.3rem;
+}
+
+.footer-links a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.online {
+  color: green;
+  font-weight: bold;
+}
+
+.vac{
+  height:5rem;
+}

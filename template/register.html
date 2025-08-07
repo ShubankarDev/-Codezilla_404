@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Sign Up - VaxTrack</title>
+  <link rel="stylesheet" href="/static/css/stylep.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="icon">
+          <img class="vac" src="/static/image/image (5).png" alt="VaxTrack Logo">
+        </div>
+        <h2>Create Your Account</h2>
+        <p>Sign up to access your personal vaccination dashboard</p>
+      </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+      <form method="POST" action="/signup">
+        <div class="input-group">
+  <label>User Name</label>
+  <input type="text" name="name" placeholder="John Doe" required value="{{ request.form.username or '' }}">
+</div>
+{% for error in form.username.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="you@example.com" required value="{{ request.form.email or '' }}">
+        </div>
+{% for error in form.email.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Choose a strong password" required value="{{ request.form.password or '' }}">
+        </div>
+         {% for error in form.password.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+        <div class="input-group">
+          <label>Confirm Password</label>
+          <input type="re-password" name="re-password" placeholder="Reenter the password" required value="{{ request.form.confirm_password or '' }}">
+        </div>
+        
+        {% for error in form.confirm_password.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+        <div class="input-group">
+          <label>role</label>
+          <input type="role" name="role" placeholder="Role" required value="{{ request.form.role or '' }}">
+        </div>
+
+        {% for error in form.role.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+
+
+        <button type="submit">Create Account</button>
+      </form>
+
+      <div class="footer-text">
+        <p>Already have an account? <a href="/login">Log In</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
