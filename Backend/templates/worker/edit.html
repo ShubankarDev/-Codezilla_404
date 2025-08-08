@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Patient Records</title>
+        0 8px 24px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .glass-card:hover,
+    .glass-card:focus-within {
+      box-shadow:
+        inset 0 0 12px rgba(255 255 255 / 0.8),
+        0 12px 32px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      outline: none;
+    }
+    /* Button styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: white;
+      background-color: #2bb89a;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .btn:hover {
+      background-color: #28a745; /* Darker shade on hover */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    /* Responsive font sizes for headings */
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      h2 {
+        font-size: 1.375rem;
+      }
+      h3 {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    function addRecordFields() {
+      const container = document.getElementById('records-container');
+      const recordDiv = document.createElement('div');
+      recordDiv.className = 'mb-6 border p-4 rounded bg-white shadow-md';
+
+      recordDiv.innerHTML = `
+        <h3 class="text-lg font-semibold mb-4">Record</h3>
+        <div class="mb-4">
+          <label for="user-id" class="block text-sm font-medium text-gray-700">User  ID</label>
+          <input type="text" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter user ID" required />
+        </div>
+        <div class="mb-4">
+          <label for="hospital" class="block text-sm font-medium text-gray-700">Hospital</label>
+          <input type="text" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter hospital name" required />
+        </div>
+        <div class="mb-4">
+          <label for="disease" class="block text-sm font-medium text-gray-700">Disease</label>
+          <input type="text" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter disease" required />
+        </div>
+        <div class="mb-4">
+          <label for="vaccine-type" class="block text-sm font-medium text-gray-700">Vaccine Type</label>
+          <input type="text" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter vaccine type" required />
+        </div>
+        <div class="mb-4">
+          <label for="dose-number" class="block text-sm font-medium text-gray-700">Dose Number</label>
+          <input type="number" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter dose number" required />
+        </div>
+        <div class="mb-4">
+          <label for="date-administered" class="block text-sm font-medium text-gray-700">Date Administered</label>
+          <input type="date" class="mt-1 p-2 border border-gray-300 rounded w-full" required />
+        </div>
+        <div class="mb-4">
+          <label for="next-dose" class="block text-sm font-medium text-gray-700">Next Dose</label>
+          <input type="date" class="mt-1 p-2 border border-gray-300 rounded w-full" />
+        </div>
+      `;
+
+      container.appendChild(recordDiv);
+    }
+  </script>
+</head>
+<body class="p-4 sm:p-6 md:p-10 text-[#4a4f6d] select-text">
+
+  <header
+    class="glass-card p-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+    role="banner"
+  >
+    <div>
+      <h1 class="font-extrabold text-4xl sm:text-5xl text-[#4a4f6d] flex items-center gap-3" aria-label="Edit Patient Records"> 
+        EDIT PATIENT RECORDS
+      </h1>
+    </div>
+    <nav class="flex gap-4 flex-wrap" aria-label="Primary actions">
+      <button
+        class="btn flex items-center gap-2 rounded-xl px-6 py-3 bg-[#2bb89a] text-white font-semibold shadow-md glow-icon focus:outline-none focus:ring-2 focus:ring-[#2bb89a]"
+        type="button"
+        onclick="window.location.href='worker-dashboard.html';" <!-- Redirect to Worker Dashboard -->
+      >
+        <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Dashboard
+      </button>
+    </nav>
+  </header>
+
+  <section class="glass-card p-6 shadow-md mb-10">
+    <h2 class="text-xl font-semibold mb-6 text-[#4a4f6d]">Add/Modify Patient Records</h2>
+    <div id="records-container">
+      <!-- Dynamic records will be added here -->
+    </div>
+    <button type="button" class="btn mb-4" onclick="addRecordFields()">Add Another Record</button>
+    <button type="submit" class="btn">Save All Changes</button>
+  </section>
+
+  <section class="glass-card p-6 shadow-md mb-10">
+    <h2 class="text-xl font-semibold mb-6 text-[#4a4f6d]">Delete Patient Record</h2>
+    <p class="mb-4">To delete a patient record, please enter the User ID:</p>
+    <form>
+      <div class="mb-4">
+        <label for="delete-user-id" class="block text-sm font-medium text-gray-700">User  ID</label>
+        <input type="text" id="delete-user-id" class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter user ID" required />
+      </div>
+      <button type="submit" class="btn bg-red-500">Delete Record</button>
+    </form>
+  </section>
+</body>
+</html>

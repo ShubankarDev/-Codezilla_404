@@ -17,8 +17,8 @@ def get_basic_stats():
     ).group_by(VaccinationRecord.vaccine_type).all()
 
     hospital_distribution = db.session.query(
-        Hospital.name, func.count(VaccinationRecord.id)
-    ).join(VaccinationRecord, Hospital.id == VaccinationRecord.hospital_id).group_by(Hospital.name).all()
+        Hospital.hospital_name, func.count(VaccinationRecord.id)
+    ).join(VaccinationRecord, Hospital.id == VaccinationRecord.hospital_id).group_by(Hospital.hospital_name).all()
 
     return {
         "total_users": total_users,

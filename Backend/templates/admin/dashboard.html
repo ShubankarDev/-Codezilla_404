@@ -1,69 +1,104 @@
-<!-- templates/admin_dashboard.html -->
+<!-- templates/admin/dashboard.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <title>📊 Admin Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>📊 Admin Dashboard</h1>
+<body class="bg-gray-100 m-4 p-6">
+    <h1 class="text-3xl font-bold mb-6">📊 Admin Dashboard</h1>
 
-    <div>
-        <canvas id="vaccineChart" width="400" height="200"></canvas>
-        <canvas id="hospitalChart" width="400" height="200"></canvas>
-        <canvas id="predictionChart" width="400" height="200"></canvas>
+    <!-- Stats Section -->
+    <div id="statsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8"></div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white shadow rounded-lg p-4">
+            <h2 class="text-lg font-semibold mb-2">Vaccine Distribution</h2>
+            <canvas id="vaccineChart"></canvas>
+        </div>
+       
+        <div class="bg-white shadow rounded-lg p-4">
+            <h2 class="text-lg font-semibold mb-2">Predicted Vaccinations (Next 7 Days)</h2>
+            <canvas id="predictionChart"></canvas>
+        </div>
     </div>
 
     <script>
-        async function loadCharts() {
+        async function loadDashboard() {
             const stats = await fetch('/api/admin/stats').then(res => res.json());
             const trends = await fetch('/api/admin/trends').then(res => res.json());
 
-            // Vaccine Type Chart
-            const vaccineLabels = Object.keys(stats.vaccine_distribution);
-            const vaccineData = Object.values(stats.vaccine_distribution);
+            // Display Stat Cards
+            const statsHTML = `
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+                    <p class="text-sm text-gray-500">Total Users</p>
+                    <p class="text-2xl font-bold">${stats.total_users}</p>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+                    <p class="text-sm text-gray-500">Total Vaccinated</p>
+                    <p class="text-2xl font-bold">${stats.total_vaccinated}</p>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+                    <p class="text-sm text-gray-500">Completion %</p>
+                    <p class="text-2xl font-bold">${stats.completion_percentage}%</p>
+                </div>
+            `;
+            document.getElementById('statsContainer').innerHTML = statsHTML;
+
+            // Vaccine Chart
             new Chart(document.getElementById('vaccineChart'), {
                 type: 'bar',
                 data: {
-                    labels: vaccineLabels,
+                    labels: Object.keys(stats.vaccine_distribution),
                     datasets: [{
                         label: 'Vaccine Type Distribution',
-                        data: vaccineData,
+                        data: Object.values(stats.vaccine_distribution),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
                     }]
                 }
             });
 
             // Hospital Chart
-            const hospitalLabels = Object.keys(stats.hospital_distribution);
-            const hospitalData = Object.values(stats.hospital_distribution);
             new Chart(document.getElementById('hospitalChart'), {
                 type: 'pie',
                 data: {
-                    labels: hospitalLabels,
+                    labels: Object.keys(stats.hospital_distribution),
                     datasets: [{
-                        label: 'Hospital Vaccination Counts',
-                        data: hospitalData
+                        data: Object.values(stats.hospital_distribution),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)'
+                        ]
                     }]
                 }
             });
 
-            // Trend Prediction Chart
+            // Prediction Chart
             new Chart(document.getElementById('predictionChart'), {
                 type: 'line',
                 data: {
                     labels: trends.future_days.map(day => 'Day ' + day),
                     datasets: [{
-                        label: 'Predicted Doses (Next 7 Days)',
+                        label: 'Predicted Doses',
                         data: trends.predicted_counts,
                         fill: true,
-                        borderColor: 'blue'
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        tension: 0.3
                     }]
                 }
             });
         }
 
-        loadCharts();
+        loadDashboard();
     </script>
 </body>
 </html>

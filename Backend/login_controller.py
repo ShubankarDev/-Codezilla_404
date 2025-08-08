@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from flask_login import login_user, login_required, logout_user, current_user
+
+from admin_analysis import get_basic_stats, get_trend_prediction
 from werkzeug.security import generate_password_hash, check_password_hash
 from model import db, AllUsers,Hospital,VaccinationRecord
 
@@ -84,11 +86,8 @@ def logout():
 def dashboard(role,username):
     if(role=="admin"):
 
-        return render_template(
-            "admin/dashboard.html",
-            role=role,
-            username=username
-        )
+        return redirect(url_for("main.admin_dashboard"))
+        
     elif(role=="user"):
         hospital_data = VaccinationRecord.query.filter_by(user_id=username).all()
         print(hospital_data)
@@ -98,3 +97,17 @@ def dashboard(role,username):
         
         return render_template("worker/dashboard.html",role=role)
 
+
+@main.route('/dashboard')
+def admin_dashboard():
+    return render_template('/admin/dashboard.html')
+
+@main.route('/api/admin/stats')
+def fetch_admin_stats():
+    stats = get_basic_stats()
+    return jsonify(stats)
+
+@main.route('/api/admin/trends')
+def fetch_admin_trends():
+    trend = get_trend_prediction()
+    return jsonify(trend)
