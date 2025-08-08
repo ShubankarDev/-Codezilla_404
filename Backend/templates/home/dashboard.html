@@ -1,0 +1,503 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vaccination Dashboard Redesign</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+    font-family: "Arial", sans-serif;
+    background-color: #f4f5f7; /* subtle monochrome background */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    }
+
+    h1, h2, h3 {
+      font-family: "Poppins", sans-serif;
+    }
+    /* Glassmorphism base */
+    .glass-card {
+      background: rgba(255 255 255 / 0.55);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255 255 255 / 0.3);
+      box-shadow:
+        inset 0 0 8px rgba(255 255 255 / 0.6),
+        0 8px 24px rgba(0 0 0 / 0.08);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .glass-card:hover,
+    .glass-card:focus-within {
+      box-shadow:
+        inset 0 0 12px rgba(255 255 255 / 0.8),
+        0 12px 32px rgba(0 0 0 / 0.12);
+      transform: translateY(-4px);
+      outline: none;
+    }
+    /* Soft glow for icons and buttons */
+    .glow-icon {
+      filter: drop-shadow(0 0 4px rgba(43, 184, 154, 0.6));
+      transition: filter 0.3s ease;
+    }
+    .glow-icon:hover,
+    .glow-icon:focus {
+      filter: drop-shadow(0 0 8px rgba(43, 184, 154, 0.9));
+      outline: none;
+    }
+    /* Microinteraction for buttons */
+    button, .btn {
+      transition: background-color 0.3s ease, box-shadow 0.3s ease,
+        transform 0.15s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    button:hover, .btn:hover {
+      box-shadow: 0 0 12px rgba(43, 184, 154, 0.5);
+      transform: translateY(-2px);
+    }
+    button:active, .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    /* Status badges with smooth transitions */
+    .status-badge {
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .status-completed {
+      background: #c6f1e7;
+      color: #2bb89a;
+      box-shadow: 0 0 6px #2bb89aaa;
+    }
+    .status-confirmed {
+      background: #6f6de8;
+      color: white;
+      box-shadow: 0 0 8px #6f6de8cc;
+    }
+    .status-pending {
+      background: #bfbff0;
+      color: #6f6de8;
+      box-shadow: 0 0 6px #6f6de8aa;
+    }
+    /* Neumorphism for table rows */
+    .neumorphic-row {
+      background: #f7f8fc;
+      box-shadow:
+        inset 4px 4px 6px #d1d9e6,
+        inset -4px -4px 6px #ffffff;
+      border-radius: 0.75rem;
+      transition: box-shadow 0.3s ease;
+    }
+    .neumorphic-row:hover {
+      box-shadow:
+        inset 6px 6px 8px #c1c9d6,
+        inset -6px -6px 8px #ffffff;
+    }
+    /* Table header with subtle gradient */
+    thead tr {
+      background: linear-gradient(90deg, #d6ccf9 0%, #bfbff0 100%);
+      color: #4a4f6d;
+      font-weight: 600;
+      font-size: 0.875rem;
+      user-select: none;
+    }
+    /* Vaccine badges with consistent sizing and font */
+    .vaccine-badge {
+      background: #d6ccf9;
+      color: #4a4f6d;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      display: inline-block;
+      margin-right: 0.4rem;
+      margin-bottom: 0.3rem;
+      user-select: none;
+      box-shadow: 0 2px 6px #bfbff0aa;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .vaccine-badge:hover {
+      background: #6f6de8;
+      color: white;
+      box-shadow: 0 4px 12px #6f6de8cc;
+    }
+    /* Scrollbar styling for table */
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #bfbff0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6f6de8;
+    }
+    /* Quick action buttons under appointments */
+    .quick-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .quick-action-btn {
+      background: rgba(111, 109, 232, 0.15);
+      color: #6f6de8;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 6px #bfbff0aa;
+      transition: background-color 0.3s ease, color 0.3s ease,
+        box-shadow 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+    }
+    .quick-action-btn:hover,
+    .quick-action-btn:focus {
+      background: #6f6de8;
+      color: white;
+      box-shadow: 0 4px 12px #6f6de8cc;
+      outline: none;
+    }
+    /* Responsive font sizes for headings */
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      h2 {
+        font-size: 1.375rem;
+      }
+      h3 {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-6 md:p-10 text-[#4a4f6d] select-text">
+
+
+  <header
+    class="glass-card p-6 mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+    role="banner"
+  >
+    <div>
+    <h1 class="font-bold text-3xl sm:text-4xl text-[#4a4f6d] flex items-center gap-3" aria-label="Welcome back"> 
+    Welcome Back <span class="text-[#2bb89a]"> {{username}}!</span>
+    </h1>
+
+      <p class="mt-1 text-base max-w-lg" id="welcome-desc">
+        Your health journey continues with smart vaccination tracking
+      </p>
+    </div>
+    <nav class="flex gap-4 flex-wrap" aria-label="Primary actions">
+     <!-- New logo + buttons layout -->
+<div class="flex items-center gap-4">
+  <!-- Logo + name -->
+  <div class="flex flex-col items-center">
+    <img src="{{url_for('static', filename='image/image (5).png')}}" alt="Logo" class="w-10 h-10">
+    <span class="text-xs font-semibold text-[#4a4f6d]">VaxiTrack</span>
+  </div>
+
+  <!-- Notifications button -->
+  <button
+    class="btn flex items-center gap-2 rounded-xl px-6 py-3 bg-gradient-to-r from-[#6f6de8] to-[#2bb89a] text-white font-semibold shadow-md glow-icon focus:outline-none focus:ring-2 focus:ring-[#2bb89a]"
+    aria-describedby="notif-desc"
+    aria-haspopup="true"
+    aria-expanded="false"
+    type="button"
+  >
+    <i class="fas fa-bell relative" aria-hidden="true">
+      <span
+        class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500"
+        aria-label="New notifications"
+      ></span>
+    </i>
+    Notifications
+  </button>
+
+  <!-- Health Insights button -->
+  <button
+    class="btn flex items-center gap-2 rounded-xl px-6 py-3 bg-[#2bb89a] text-white font-semibold shadow-md glow-icon focus:outline-none focus:ring-2 focus:ring-[#2bb89a]"
+    type="button"
+  >
+    <i class="fas fa-heartbeat" aria-hidden="true"></i> Health Insights
+  </button>
+</div>
+</nav>
+</header>
+
+
+  <section
+    aria-label="Summary metrics"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10"
+  >
+    <article
+      tabindex="0"
+      class="glass-card flex items-center gap-5 p-6 shadow-md focus:outline-none focus:ring-4 focus:ring-[#2bb89a]"
+      aria-labelledby="total-vaccines-label total-vaccines-value"
+      role="region"
+    >
+      <div
+        class="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-tr from-[#a6f0d1] to-[#2bb89a] text-white glow-icon"
+        aria-hidden="true"
+      >
+        <i class="fas fa-shield-alt text-2xl"></i>
+      </div>
+      <div>
+        <p
+          id="total-vaccines-value"
+          class="text-[#2bb89a] font-bold text-2xl leading-none"
+        >
+          {{hospitals|count}}
+        </p>
+        <p id="total-vaccines-label" class="text-sm font-medium">
+          Total Vaccines
+        </p>
+      </div>
+    </article>
+
+    <article
+      tabindex="0"
+      class="glass-card flex items-center gap-5 p-6 shadow-md focus:outline-none focus:ring-4 focus:ring-[#6f6de8]"
+      aria-labelledby="upcoming-label upcoming-value"
+      role="region"
+    >
+      <div
+        class="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-tr from-[#bfbff0] to-[#6f6de8] text-white glow-icon"
+        aria-hidden="true"
+      >
+        <i class="fas fa-calendar-alt text-2xl"></i>
+      </div>
+      <div>
+        <p
+          id="upcoming-value"
+          class="text-[#6f6de8] font-bold text-2xl leading-none"
+        >
+          2
+        </p>
+        <p id="upcoming-label" class="text-sm font-medium">Upcoming</p>
+      </div>
+    </article>
+
+    <article
+      tabindex="0"
+      class="glass-card flex items-center gap-5 p-6 shadow-md focus:outline-none focus:ring-4 focus:ring-[#e6c84a]"
+      aria-labelledby="protection-label protection-value"
+      role="region"
+    >
+      <div
+        class="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-tr from-[#fff3cc] to-[#e6c84a] text-white glow-icon"
+        aria-hidden="true"
+      >
+        <i class="fas fa-chart-line text-2xl text-[#e6c84a]"></i>
+      </div>
+      <div>
+        <p
+          id="protection-value"
+          class="text-[#e6c84a] font-bold text-2xl leading-none"
+        >
+          98%
+        </p>
+        <p id="protection-label" class="text-sm font-medium">Protection Rate</p>
+      </div>
+    </article>
+
+    <article
+      tabindex="0"
+      class="glass-card flex items-center gap-5 p-6 shadow-md focus:outline-none focus:ring-4 focus:ring-[#4a4f6d]"
+      aria-labelledby="hospitals-label hospitals-value"
+      role="region"
+    >
+      <div
+        class="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-tr from-[#e6e3f9] to-[#bfbff0] text-[#4a4f6d] glow-icon"
+        aria-hidden="true"
+      >
+        <i class="fas fa-hospital-user text-2xl"></i>
+      </div>
+      <div>
+        <p id="hospitals-value" class="text-black font-bold text-2xl leading-none">
+          4
+        </p>
+        <p id="hospitals-label" class="text-sm font-medium">Hospitals</p>
+      </div>
+    </article>
+  </section>
+
+  <main class="grid grid-cols-1 md:grid-cols-3 gap-8" role="main">
+    <section
+      class="glass-card p-6 shadow-md md:col-span-2"
+      aria-labelledby="prev-vaccination-title"
+    >
+      <h2
+        id="prev-vaccination-title"
+        class="text-xl font-semibold mb-6 flex items-center gap-3 text-[#4a4f6d]"
+      >
+        <i class="fas fa-shield-alt text-[#6f6de8] glow-icon" aria-hidden="true"></i>
+        Previous Vaccination Records
+      </h2>
+      <div class="overflow-x-auto" role="region" aria-label="Vaccination records table">
+        <table class="w-full border-collapse" role="table">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3 px-5 min-w-[90px]">Date</th>
+              <th scope="col" class="py-3 px-5 min-w-[110px]">Disease</th>
+              <th scope="col" class="py-3 px-5 min-w-[160px]">Vaccines</th>
+              <th scope="col" class="py-3 px-5 min-w-[160px]">Hospital</th>
+              <th scope="col" class="py-3 px-5 min-w-[90px]">Status</th>
+            </tr>
+          </thead>
+        <tbody class="text-[#1e1e1e] font-normal">
+  {% for record in hospitals %}
+  <tr
+    tabindex="0"
+    class="neumorphic-row mb-4"
+    aria-describedby="{{ record.date_administered }}-vaccine-desc"
+    role="row"
+  >
+    <td class="py-4 px-5 font-semibold" role="cell">{{ record.date_administered }}</td>
+    <td class="py-4 px-5" role="cell">{{ record.disease }}</td>
+    <td class="py-4 px-5" role="cell" id="{{ record.disease | lower }}-vaccine-desc">
+      <span
+        class="vaccine-badge"
+        title="{{ record.vaccine_type }}"
+        aria-label="{{ record.vaccine_type }}"
+      >
+        <i class="fas fa-syringe" aria-hidden="true"></i> {{ record.vaccine_type }}
+      </span>
+      {% if record.dose_number > 1 %}
+      <span
+        class="vaccine-badge"
+        title="Booster dose"
+        aria-label="Booster dose"
+      >
+        <i class="fas fa-plus-circle" aria-hidden="true"></i> Booster
+      </span>
+      {% endif %}
+    </td>
+    <td class="py-4 px-5 flex items-center gap-2" role="cell">
+      <i class="fas fa-map-marker-alt text-[#6f6de8] text-sm" aria-hidden="true"></i>
+      {{ record.hospital.hospital_name }}
+    </td>
+    <td class="py-4 px-5" role="cell">
+      <span class="status-badge status-completed" aria-label="Completed">
+        <i class="fas fa-check-circle" aria-hidden="true"></i> completed
+      </span>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+        </table></div>
+    </section>
+
+    <section
+      class="glass-card p-6 shadow-md"
+      aria-labelledby="future-appointments-title"
+    >
+      <h2
+        id="future-appointments-title"
+        class="text-xl font-semibold mb-6 flex items-center gap-3 text-[#4a4f6d]"
+      >
+        <i class="fas fa-calendar-alt text-[#2bb89a] glow-icon" aria-hidden="true"></i>
+        Future Appointments
+      </h2>
+      <div class="flex flex-col gap-6" role="list" aria-label="Future appointments list">
+        <article
+          tabindex="0"
+          class="glass-card p-5 max-w-md shadow-md focus:outline-none focus:ring-4 focus:ring-[#6f6de8]"
+          role="listitem"
+          aria-describedby="annual-flu-desc"
+          aria-label="Annual Flu Shot appointment confirmed"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-lg text-[#1e1e1e]">Annual Flu Shot</h3>
+            <span class="status-badge status-confirmed" aria-label="Confirmed appointment">
+              <i class="fas fa-check-circle" aria-hidden="true"></i> confirmed
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-4 text-[#6f6de8] text-sm mb-2"
+            id="annual-flu-desc"
+          >
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+            <time datetime="2024-08-15">2024-08-15</time>
+            <i class="fas fa-clock" aria-hidden="true"></i>
+            <span>10:30 AM</span>
+          </div>
+          <p class="text-[#6f6de8] text-sm mb-3">Metro General Hospital</p>
+          <div class="quick-actions" role="group" aria-label="Quick actions for Annual Flu Shot">
+            <button class="quick-action-btn" type="button" aria-label="Schedule Appointment">
+              <i class="fas fa-calendar-plus" aria-hidden="true"></i> Schedule Appointment
+            </button>
+            <button class="quick-action-btn" type="button" aria-label="View Recommendations">
+              <i class="fas fa-lightbulb" aria-hidden="true"></i> View Recommendations
+            </button>
+            <button class="quick-action-btn" type="button" aria-label="Set Reminder">
+              <i class="fas fa-bell" aria-hidden="true"></i> Set Reminder
+            </button>
+          </div>
+        </article>
+
+        <article
+          tabindex="0"
+          class="glass-card p-5 max-w-md shadow-md focus:outline-none focus:ring-4 focus:ring-[#6f6de8]"
+          role="listitem"
+          aria-describedby="travel-typhoid-desc"
+          aria-label="Travel Vaccination - Typhoid appointment pending"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-lg text-[#1e1e1e]">
+              Travel Vaccination - Typhoid
+            </h3>
+            <span class="status-badge status-pending" aria-label="Pending appointment">
+              <i class="fas fa-hourglass-half" aria-hidden="true"></i> pending
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-4 text-[#6f6de8] text-sm mb-2"
+            id="travel-typhoid-desc"
+          >
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+            <time datetime="2024-09-05">2024-09-05</time>
+            <i class="fas fa-clock" aria-hidden="true"></i>
+            <span>2:00 PM</span>
+          </div>
+          <p class="text-[#6f6de8] text-sm mb-3">Travel Health Clinic</p>
+          <div class="quick-actions" role="group" aria-label="Quick actions for Travel Vaccination - Typhoid">
+            <button class="quick-action-btn" type="button" aria-label="Schedule Appointment">
+              <i class="fas fa-calendar-plus" aria-hidden="true"></i> Schedule Appointment
+            </button>
+            <button class="quick-action-btn" type="button" aria-label="View Recommendations">
+              <i class="fas fa-lightbulb" aria-hidden="true"></i> View Recommendations
+            </button>
+            <button class="quick-action-btn" type="button" aria-label="Set Reminder">
+              <i class="fas fa-bell" aria-hidden="true"></i> Set Reminder
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

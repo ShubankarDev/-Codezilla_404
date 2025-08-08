@@ -42,4 +42,4 @@ def login():
             return redirect(url_for('auth.login'))  # Update this as needed
         else:
             flash('Invalid email or password.', 'danger')
-    return render_template('login.html', form=form)
+    return render_template('./login.html', form=form)
