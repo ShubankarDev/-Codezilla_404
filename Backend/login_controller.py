@@ -95,5 +95,6 @@ def dashboard(role,username):
         return render_template("home/dashboard.html",role=role,username=username,
             hospitals=hospital_data)
     else:
+        
         return render_template("worker/dashboard.html",role=role)
 

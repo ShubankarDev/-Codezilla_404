@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from db import db
-from models import VaccinationRecord
+from model import db
+from model import VaccinationRecord
 
 user_bp = Blueprint('user', __name__)
 

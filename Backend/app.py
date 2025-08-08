@@ -4,6 +4,13 @@ from login_controller import main as main_blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from model import db, AllUsers
 from seed_data import seed_data
+from routes_admin import admin_bp
+from routes_worker import worker_bp
+from routes_user import user_bp
+from routes_home import home_bp
+#from Backend.routes_auth import auth_bp
+from routes_admin import admin_bp
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'its-a-secret'
@@ -54,3 +61,9 @@ if __name__ == '__main__':
         db.session.commit() 
         seed_data()
     app.run(debug=True)
+
+app.register_blueprint(home_bp)
+app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(worker_bp, url_prefix='/worker')
+app.register_blueprint(user_bp, url_prefix='/user')
+

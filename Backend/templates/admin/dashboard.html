@@ -1,0 +1,69 @@
+<!-- templates/admin_dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>📊 Admin Dashboard</h1>
+
+    <div>
+        <canvas id="vaccineChart" width="400" height="200"></canvas>
+        <canvas id="hospitalChart" width="400" height="200"></canvas>
+        <canvas id="predictionChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        async function loadCharts() {
+            const stats = await fetch('/api/admin/stats').then(res => res.json());
+            const trends = await fetch('/api/admin/trends').then(res => res.json());
+
+            // Vaccine Type Chart
+            const vaccineLabels = Object.keys(stats.vaccine_distribution);
+            const vaccineData = Object.values(stats.vaccine_distribution);
+            new Chart(document.getElementById('vaccineChart'), {
+                type: 'bar',
+                data: {
+                    labels: vaccineLabels,
+                    datasets: [{
+                        label: 'Vaccine Type Distribution',
+                        data: vaccineData,
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // Hospital Chart
+            const hospitalLabels = Object.keys(stats.hospital_distribution);
+            const hospitalData = Object.values(stats.hospital_distribution);
+            new Chart(document.getElementById('hospitalChart'), {
+                type: 'pie',
+                data: {
+                    labels: hospitalLabels,
+                    datasets: [{
+                        label: 'Hospital Vaccination Counts',
+                        data: hospitalData
+                    }]
+                }
+            });
+
+            // Trend Prediction Chart
+            new Chart(document.getElementById('predictionChart'), {
+                type: 'line',
+                data: {
+                    labels: trends.future_days.map(day => 'Day ' + day),
+                    datasets: [{
+                        label: 'Predicted Doses (Next 7 Days)',
+                        data: trends.predicted_counts,
+                        fill: true,
+                        borderColor: 'blue'
+                    }]
+                }
+            });
+        }
+
+        loadCharts();
+    </script>
+</body>
+</html>
